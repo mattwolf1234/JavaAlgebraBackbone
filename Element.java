@@ -14,30 +14,5 @@
  * limitations under the License.
  */
 
-public class Variable extends Element implements Comparable<Variable> {
-    char var;
-    public Variable(){
-        var = 'x';
-    }
-    public Variable(char var){
-        this.var = var;
-    }
-
-    public char getVar() {
-        return var;
-    }
-
-    public void setVar(char var) {
-        this.var = var;
-    }
-
-    @Override
-    public String toString() {
-        return String.valueOf(var);
-    }
-
-    @Override
-    public int compareTo(Variable o) {
-        return Character.compare(var, o.getVar());
-    }
+public class Element {
 }

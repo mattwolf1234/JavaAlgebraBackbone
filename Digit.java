@@ -15,7 +15,7 @@
  */
 
 // this class holds a single number
-public class Digit {
+public class Digit extends Element{
     private double digit;
 
     public Digit(){
@@ -31,6 +31,20 @@ public class Digit {
 
     public void setDigit(double digit) {
         this.digit = digit;
+    }
+
+    public void addDigit(Digit num){
+        this.digit += num.getDigit();
+    }
+
+    public void mulDigit(Digit num){
+        this.digit *= num.getDigit();
+    }
+    public void divDigit(Digit num){
+        this.digit /= num.getDigit();
+    }
+    public void subDigit(Digit num){
+        this.digit -= num.getDigit();
     }
 
     @Override

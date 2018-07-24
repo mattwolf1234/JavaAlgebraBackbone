@@ -15,20 +15,21 @@
  */
 
 // this class is like a container
-public class Operation {
-    public static final int OPERATION_ADD = 0;
-    public static final int OPERATION_SUBTRACT = 1;
-    public static final int OPERATION_MUL = 2; // multiply
-    public static final int OPERATION_DIV = 3;
+public class Operation extends Element{
+    public static final int OPERATION_ADD = 1;
+    public static final int OPERATION_SUBTRACT = 0;
+    public static final int OPERATION_MUL = 3; // multiply
+    public static final int OPERATION_DIV = 2;
     public static final int OPERATION_EXP = 4; // exponent
+    public static final int OPERATION_PAR = 5; //parenthesis
 
     private int current_operation;
 
-    public Operation(){
+    public Operation() {
         current_operation = OPERATION_ADD;
     }
 
-    public Operation(int current_operation){
+    public Operation(int current_operation) {
         this.current_operation = current_operation;
     }
 
@@ -43,7 +44,7 @@ public class Operation {
     @Override
     public String toString() {
         String returnString;
-        switch (current_operation){
+        switch (current_operation) {
             case OPERATION_ADD:
                 returnString = "+";
                 break;
@@ -59,10 +60,13 @@ public class Operation {
             case OPERATION_EXP:
                 returnString = "^";
                 break;
-                default:
-                    returnString = "";
-                    break;
+            case OPERATION_PAR:
+                returnString = "()";
+                break;
+            default:
+                returnString = "";
+                break;
         }
-        return " " + returnString + " ";
+        return returnString;
     }
 }

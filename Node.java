@@ -15,6 +15,7 @@
  */
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class Node<T> {
@@ -42,6 +43,15 @@ public class Node<T> {
 
     public List<Node<T>> getChildren() {
         return children;
+    }
+
+    public Node<T> copy(){
+        Node<T> newNode = new Node<>(data);
+        for (Iterator iter = children.iterator(); iter.hasNext();){
+            Node<T> child = (Node<T>) iter.next();
+            newNode.addChild(child.copy());
+        }
+        return newNode;
     }
 
     public T getData() {
@@ -90,6 +100,10 @@ public class Node<T> {
         this.getChildren().clear();
     }
 
+    public void deleteNodeChildren(){
+        this.getChildren().clear();
+    }
+
     public Node<T> deleteRootNode() {
         if (parent != null) {
             throw new IllegalStateException("deleteRootNode not called on root");
@@ -108,4 +122,84 @@ public class Node<T> {
         return newParent;
     }
 
+    @Override
+    public String toString(){
+        String returnString = "";
+        if (data instanceof Operation){
+            if (((Operation) data).getCurrent_operation() != Operation.OPERATION_EXP && ((Operation) data).getCurrent_operation() != Operation.OPERATION_ADD &&
+                    ((Operation) data).getCurrent_operation() != Operation.OPERATION_SUBTRACT){
+                returnString = "(";
+                for (Node<T> item: children){
+                    if (item.getData() instanceof Operation && (((Operation) item.getData()).getCurrent_operation() == Operation.OPERATION_ADD ||
+                            ((Operation) item.getData()).getCurrent_operation() == Operation.OPERATION_SUBTRACT)){
+                        /*
+                        checking to see the children are of addition or subtraction.
+                        If so then add parenthesis.
+                         */
+                        returnString += "(";
+                        returnString += item.toString();
+                        returnString += ")";
+                    }else {
+                        returnString += item.toString();
+                    }
+                    if (((Operation) data).getCurrent_operation() == Operation.OPERATION_DIV){// if this is division we need to check if it is contained in add, sub, or mul
+                        if (!item.equals(children.get(children.size() -1))) {// stopping the last slash from showing up
+                            returnString += "/";
+                        }
+                        if (children.size() != 2){
+                            throw new IllegalStateException("A division operation must have two children");
+                        }
+
+                        if (item.getData() instanceof Operation && ((((Operation) item.getData()).getCurrent_operation() == Operation.OPERATION_EXP) ||
+                                (((Operation) item.getData()).getCurrent_operation() == Operation.OPERATION_DIV))){
+                            throw new IllegalStateException("Cannot have operation exponent or division as a child under division");
+                        }
+                    }
+                }
+                returnString += ")";
+
+            }else if (((Operation) data).getCurrent_operation() == Operation.OPERATION_EXP){
+
+                if (children.size() != 2){
+                    throw new IllegalStateException("Operation exponent must have only two children");
+                }
+
+                returnString += children.get(0).toString();
+
+                returnString += data.toString() + "(";
+                returnString += children.get(1).toString();
+                returnString += ")";
+
+            } else{
+                for (int i = 0; i < children.size(); i++) {
+
+                    returnString += children.get(i).toString();
+
+                    if (children.get(i).getData() instanceof Function){//gives ending parenthesis for a function
+                        returnString += ")";
+                    }
+
+                    if (i != children.size() - 1) {// stopping string from adding a unnecessary character
+                        returnString += " " + data.toString() + " ";
+                    }
+
+
+                }
+            }
+        }else{
+
+            returnString += data.toString();
+
+            if (data instanceof Function){// gives begging parenthesis for a function
+                returnString += "(";
+            }
+
+            if (!children.isEmpty()){// if there are children and the code got to here that means there is a exponent
+                for (Node<T> item: children){
+                    returnString += item.toString();
+                }
+            }
+        }
+        return returnString;
+    }
 }
